@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"graphiclabs/internal/application"
+	"graphiclabs/internal/figures"
 	"log"
 )
 
@@ -19,7 +20,7 @@ const (
     #version 410
     out vec4 frag_colour;
     void main() {
-        frag_colour = vec4(1, 1, 1, 1);
+        frag_colour = vec4(0.1, 0.97, 0.03, 1);
     }
 ` + "\x00"
 )
@@ -27,11 +28,15 @@ const (
 func main() {
 	app := application.CreateApplication("Lab 1")
 	app.Program = initOpenGL()
-	app.Figure = []float32{
-		0, 0.5, 0, // top
-		-0.5, -0.5, 0, // left
-		0.5, -0.5, 0, // right
+	circle := &figures.CircleFragment{
+		Point:    figures.Point{X: -0.5, Y: -0.3},
+		Rotation: 0,
+		Radius:   0.3,
 	}
+
+	var f figures.Figure = circle
+
+	app.Figures = append(app.Figures, &f)
 	app.Run()
 }
 
