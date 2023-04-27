@@ -27,9 +27,17 @@ type Application struct {
 	vertices []float32
 }
 
-func CreateApplication(name string) *Application {
+func CreateApplication(name string, inputWidth int, inputHeight int) *Application {
+	if inputWidth == 0 {
+		inputWidth = width
+	}
+
+	if inputHeight == 0 {
+		inputHeight = height
+	}
+
 	application := new(Application)
-	if createdWindow, err := window.InitWindow(width, height, name); err != nil {
+	if createdWindow, err := window.InitWindow(inputWidth, inputHeight, name); err != nil {
 		panic(err)
 	} else {
 		application.Window = createdWindow
@@ -55,7 +63,6 @@ func (app *Application) Run() {
 		case <-app.shouldClose:
 			app.Window.SetShouldClose(true)
 		case app.Figures = <-app.figuresChannel:
-			fmt.Println("Get figures: ", *app.Figures[0])
 			app.compileVertices()
 			app.vao = app.makeVao()
 			app.draw()

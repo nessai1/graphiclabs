@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"graphiclabs/internal/application"
@@ -25,10 +26,12 @@ const (
         frag_colour = vec4(0.1, 0.97, 0.03, 1);
     }
 ` + "\x00"
+	appHeight = 600
+	appWight  = 600
 )
 
 func main() {
-	app := application.CreateApplication("Lab 1")
+	app := application.CreateApplication("Lab 1", appWight, appHeight)
 	app.Program = initOpenGL()
 	app.Handler = programHandler
 	app.Run()
@@ -59,11 +62,26 @@ func initOpenGL() uint32 {
 }
 
 func programHandler(window *glfw.Window, shouldClose chan bool, figuresChannel chan []*figures.Figure) {
-
 	for {
 		if window.GetKey(glfw.KeyEscape) == 1 {
 			shouldClose <- true
 		}
+		if window.GetMouseButton(glfw.MouseButton1) == 1 {
+			x, y := window.GetCursorPos()
+			fmt.Println("Point: ", figures.GeneratePointByWindow(appHeight, appWight, x, y))
+			circle := &figures.CircleFragment{
+				Point:    figures.GeneratePointByWindow(appHeight, appWight, x, y),
+				Rotation: 0,
+				Radius:   0.3,
+			}
+
+			var f figures.Figure = circle
+
+			resultFigures := []*figures.Figure{&f}
+			figuresChannel <- resultFigures
+			time.Sleep(time.Millisecond * 100)
+		}
+
 		if window.GetKey(glfw.KeyEnter) == 1 {
 
 			circle := &figures.CircleFragment{
@@ -78,7 +96,7 @@ func programHandler(window *glfw.Window, shouldClose chan bool, figuresChannel c
 			figuresChannel <- resultFigures
 			time.Sleep(time.Second * 2)
 		}
-		time.Sleep(time.Millisecond * 200)
+		time.Sleep(time.Millisecond * 5)
 	}
 
 }
