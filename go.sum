@@ -1,6 +1,6 @@
+github.com/cnkei/gospline v0.0.0-20191204052713-d67fac29a294 h1:zIFcK9T9qytnmXuKt5Z7jG66C8c8FJjy8rtxOmVVm0o=
+github.com/cnkei/gospline v0.0.0-20191204052713-d67fac29a294/go.mod h1:DXXGDL64/wxXgBSgmGMEL0vYC0tdvpgNhkJrvavhqDM=
 github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6 h1:zDw5v7qm4yH7N8C8uWd+8Ii9rROdgWxQuGoJ9WDXxfk=
 github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6/go.mod h1:9YTyiznxEY1fVinfM7RvRcjRHbw2xLBJ3AAGIT0I4Nw=
 github.com/go-gl/glfw v0.0.0-20221017161538-93cebf72946b h1:2hdUMUOJuLQkhaPAwoyOeSzoaBydYEkXkBEuqDuDBfg=
 github.com/go-gl/glfw v0.0.0-20221017161538-93cebf72946b/go.mod h1:wyvWpaEu9B/VQiV1jsPs7Mha9I7yto/HqIBw197ZAzk=
-github.com/veandco/go-sdl2 v0.4.34 h1:dqbUhV/SSJ35grdYTLv3iVxtO1NzNmgzMV//hyCyypY=
-github.com/veandco/go-sdl2 v0.4.34/go.mod h1:OROqMhHD43nT4/i9crJukyVecjPNYYuCofep6SNiAjY=

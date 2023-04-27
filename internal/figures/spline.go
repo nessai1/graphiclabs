@@ -1,30 +1,39 @@
 package figures
 
+import (
+	"fmt"
+	"github.com/cnkei/gospline"
+)
+
 type Spline struct {
-	diameter         float32
-	parallelVertices []float32
-	vertices         []float32
+	spline  gospline.Spline
+	Counter int
+	x       []float64
+	y       []float64
 }
 
 func (s *Spline) AddPoint(point Point) {
-
-	s.vertices = []float32{
-		0.1, 0.1, 0,
-		0.3, 0.1, 0,
-		0.3, 0.3, 0,
-		0.1, 0.3, 0,
-		0.3, 0.3, 0,
-		0.1, 0.1, 0,
-	}
-
-	return
-	if len(s.vertices) == 0 {
-		s.vertices = []float32{point.X, point.Y, 0}
-	} else if len(s.vertices) == 3 {
-		s.vertices = append(s.vertices, point.X, point.Y, 0)
-	}
+	s.x = append(s.x, float64(point.X))
+	s.y = append(s.y, float64(point.Y))
+	s.Counter++
 }
 
 func (s *Spline) GetVertices() *[]float32 {
-	return &s.vertices
+	if len(s.x) <= 1 {
+		return &[]float32{}
+	}
+	xStart := s.x[0]
+	xEnd := s.x[len(s.x)-1]
+	s.spline = gospline.NewCubicSpline(s.x, s.y)
+	fmt.Println(len(s.spline.Range(s.x[0], s.x[len(s.x)-1], 200)))
+	ln := (xEnd - xStart) / 100
+
+	var rs []float32
+	for i := 99; i > 0; i-- {
+		rs = append(rs, float32(xStart+ln*float64(i)), float32(s.spline.At(xStart+ln*float64(i))), 0)
+	}
+
+	fmt.Println(rs[0], rs[1])
+	fmt.Println(rs[len(rs)-3], rs[len(rs)-2])
+	return &rs
 }

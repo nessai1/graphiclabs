@@ -7,6 +7,7 @@ import (
 	"graphiclabs/internal/application"
 	"graphiclabs/internal/figures"
 	"log"
+	"time"
 )
 
 const (
@@ -33,6 +34,7 @@ func main() {
 	app := application.CreateApplication("Lab 3", appWight, appHeight)
 	app.Program = initOpenGL()
 	app.Handler = programHandler
+	app.Mode = gl.LINE_STRIP
 	app.Run()
 }
 
@@ -62,7 +64,7 @@ func initOpenGL() uint32 {
 
 func programHandler(window *glfw.Window, shouldClose chan bool, figuresChannel chan []*figures.Figure) {
 
-	pixels := figures.Pixels{Diameter: 0.01}
+	spline := figures.Spline{}
 	for {
 		if window.GetKey(glfw.KeyEscape) == 1 {
 			shouldClose <- true
@@ -72,13 +74,16 @@ func programHandler(window *glfw.Window, shouldClose chan bool, figuresChannel c
 			x, y := window.GetCursorPos()
 			fmt.Println("Point: ", figures.GeneratePointByWindow(appHeight, appWight, x, y))
 
-			pixels.AddPixel(figures.GeneratePointByWindow(appHeight, appWight, x, y))
+			spline.AddPoint(figures.GeneratePointByWindow(appHeight, appWight, x, y))
+			fmt.Println(spline.Counter)
+			if spline.Counter > 1 {
+				var f figures.Figure = &spline
 
-			var f figures.Figure = &pixels
+				resultFigures := []*figures.Figure{&f}
+				figuresChannel <- resultFigures
+			}
 
-			resultFigures := []*figures.Figure{&f}
-			figuresChannel <- resultFigures
-			//time.Sleep(time.Millisecond * 5)
+			time.Sleep(time.Millisecond * 400)
 		}
 
 		//time.Sleep(time.Millisecond * 5)

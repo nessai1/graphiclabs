@@ -25,6 +25,7 @@ type Application struct {
 	Figures  []*figures.Figure
 	Handler  func(*glfw.Window, chan bool, chan []*figures.Figure)
 	vertices []float32
+	Mode     uint32
 }
 
 func CreateApplication(name string, inputWidth int, inputHeight int) *Application {
@@ -42,6 +43,8 @@ func CreateApplication(name string, inputWidth int, inputHeight int) *Applicatio
 	} else {
 		application.Window = createdWindow
 	}
+
+	application.Mode = gl.TRIANGLES
 
 	return application
 }
@@ -77,7 +80,7 @@ func (app *Application) draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.UseProgram(app.Program)
 	gl.BindVertexArray(app.vao)
-	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(app.vertices)/3))
+	gl.DrawArrays(app.Mode, 0, int32(len(app.vertices)))
 
 	glfw.PollEvents()
 	app.Window.SwapBuffers()
