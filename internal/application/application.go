@@ -16,10 +16,14 @@ const (
 )
 
 type Application struct {
+	shouldClose    chan bool
+	figuresChannel chan []*figures.Figure
+
 	Window   *glfw.Window
 	Program  uint32
 	vao      uint32
 	Figures  []*figures.Figure
+	Handler  func(*glfw.Window, chan bool, chan []*figures.Figure)
 	vertices []float32
 }
 
@@ -38,13 +42,26 @@ func (app *Application) Run() {
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 	app.compileVertices()
-	app.vao = app.makeVao()
+	if len(app.vertices) > 0 {
+		app.vao = app.makeVao()
+	}
+	app.shouldClose = make(chan bool)
+	app.figuresChannel = make(chan []*figures.Figure)
+
+	go app.Handler(app.Window, app.shouldClose, app.figuresChannel)
 
 	for !app.Window.ShouldClose() {
-		if app.Window.GetKey(glfw.KeyEnter) == 1 {
-			fmt.Println("ENTER IS PRESSED!")
+		select {
+		case <-app.shouldClose:
+			app.Window.SetShouldClose(true)
+		case app.Figures = <-app.figuresChannel:
+			fmt.Println("Get figures: ", *app.Figures[0])
+			app.compileVertices()
+			app.vao = app.makeVao()
+			app.draw()
+		default:
+			app.draw()
 		}
-		app.draw()
 	}
 
 }

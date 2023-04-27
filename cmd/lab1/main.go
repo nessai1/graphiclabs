@@ -2,9 +2,11 @@ package main
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/go-gl/glfw/v3.2/glfw"
 	"graphiclabs/internal/application"
 	"graphiclabs/internal/figures"
 	"log"
+	"time"
 )
 
 const (
@@ -28,15 +30,7 @@ const (
 func main() {
 	app := application.CreateApplication("Lab 1")
 	app.Program = initOpenGL()
-	circle := &figures.CircleFragment{
-		Point:    figures.Point{X: -0.5, Y: -0.3},
-		Rotation: 0,
-		Radius:   0.3,
-	}
-
-	var f figures.Figure = circle
-
-	app.Figures = append(app.Figures, &f)
+	app.Handler = programHandler
 	app.Run()
 }
 
@@ -62,4 +56,29 @@ func initOpenGL() uint32 {
 	gl.AttachShader(prog, fragmentShader)
 	gl.LinkProgram(prog)
 	return prog
+}
+
+func programHandler(window *glfw.Window, shouldClose chan bool, figuresChannel chan []*figures.Figure) {
+
+	for {
+		if window.GetKey(glfw.KeyEscape) == 1 {
+			shouldClose <- true
+		}
+		if window.GetKey(glfw.KeyEnter) == 1 {
+
+			circle := &figures.CircleFragment{
+				Point:    figures.Point{X: -0.5, Y: -0.3},
+				Rotation: 0,
+				Radius:   0.3,
+			}
+
+			var f figures.Figure = circle
+
+			resultFigures := []*figures.Figure{&f}
+			figuresChannel <- resultFigures
+			time.Sleep(time.Second * 2)
+		}
+		time.Sleep(time.Millisecond * 200)
+	}
+
 }
