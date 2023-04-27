@@ -1,12 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"graphiclabs/internal/application"
 	"graphiclabs/internal/figures"
 	"log"
-	"time"
 )
 
 const (
@@ -30,16 +30,9 @@ const (
 )
 
 func main() {
-	app := application.CreateApplication("Lab 2", appWight, appHeight)
+	app := application.CreateApplication("Lab 3", appWight, appHeight)
 	app.Program = initOpenGL()
 	app.Handler = programHandler
-	circle := &figures.CircleFragment{
-		Point:    figures.Point{X: 0, Y: 0},
-		Rotation: 0,
-		Radius:   0.3,
-	}
-	var f figures.Figure = circle
-	app.Figures = []*figures.Figure{&f}
 	app.Run()
 }
 
@@ -68,45 +61,27 @@ func initOpenGL() uint32 {
 }
 
 func programHandler(window *glfw.Window, shouldClose chan bool, figuresChannel chan []*figures.Figure) {
-	rotation := 0
+
+	pixels := figures.Pixels{Diameter: 0.01}
 	for {
 		if window.GetKey(glfw.KeyEscape) == 1 {
 			shouldClose <- true
 		}
 
-		if window.GetKey(glfw.KeyLeft) == 1 {
-			rotation -= 1
-			circle := &figures.CircleFragment{
-				Point:    figures.Point{X: 0, Y: 0},
-				Rotation: rotation,
-				Radius:   0.3,
-			}
+		if window.GetMouseButton(glfw.MouseButton1) == 1 {
+			x, y := window.GetCursorPos()
+			fmt.Println("Point: ", figures.GeneratePointByWindow(appHeight, appWight, x, y))
 
-			var f figures.Figure = circle
+			pixels.AddPixel(figures.GeneratePointByWindow(appHeight, appWight, x, y))
+
+			var f figures.Figure = &pixels
 
 			resultFigures := []*figures.Figure{&f}
 			figuresChannel <- resultFigures
+			//time.Sleep(time.Millisecond * 5)
 		}
 
-		if window.GetKey(glfw.KeyRight) == 1 {
-			rotation += 1
-			circle := &figures.CircleFragment{
-				Point:    figures.Point{X: 0, Y: 0},
-				Rotation: rotation,
-				Radius:   0.3,
-			}
-
-			var f figures.Figure = circle
-
-			resultFigures := []*figures.Figure{&f}
-			figuresChannel <- resultFigures
-		}
-
-		if window.GetKey(glfw.KeyLeft) == 1 {
-			log.Println("LEFT KEY")
-		}
-
-		time.Sleep(time.Millisecond * 5)
+		//time.Sleep(time.Millisecond * 5)
 	}
 
 }
